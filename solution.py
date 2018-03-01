@@ -29,7 +29,6 @@ with open(sys.argv[1]) as in_file:
     vehicle_rides = collections.defaultdict(list)
     ride_found = True
     while len(rides_left) > 0 and ride_found:
-        print('----')
         ride_found = False
         for vehicle_number in range(nr_vehicles):
             pos, time = vehicle_position_times[vehicle_number]
