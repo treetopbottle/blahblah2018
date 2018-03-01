@@ -42,7 +42,9 @@ with open(sys.argv[1]) as in_file:
                 vehicle_rides[vehicle_number].append(best_ride)
                 ride_found = True
 
-    for key in vehicle_rides:
-        v_r = vehicle_rides[key]
+    for i in range(nr_vehicles):
+        v_r = vehicle_rides[i]
+        if v_r == []:
+            print("0")
         print(len(v_r), ' '.join([str(i) for i in v_r]))
 
