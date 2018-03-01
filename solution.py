@@ -9,7 +9,7 @@ def find_best_ride(rides, rides_left, position, time):
         (a, b), (x, y), earliest_start, latest_finish = rides[ride]
         to_ride_dist = abs(position[0]-a) + abs(position[1]-b)
         ride_dist = abs(a-x) + abs(b-y)
-        possible = latest_finish < time + to_ride_dist + ride_dist
+        possible = latest_finish > time + to_ride_dist + ride_dist
         if possible:
             rides_left.remove(ride)
             return ride
@@ -39,6 +39,7 @@ with open(sys.argv[1]) as in_file:
             pos, time = vehicle_position_times[vehicle_number]
             best_ride = find_best_ride(rides, rides_left, pos, time)
             if best_ride:
+                # TODO update vehicle ride and position
                 vehicle_rides[vehicle_number].append(best_ride)
                 ride_found = True
 
