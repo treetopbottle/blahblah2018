@@ -5,9 +5,14 @@ import collections
 
 
 def find_best_ride(rides, rides_left, position, time):
-    # TODO find possible ride
-    if len(rides_left) > 0:
-        return rides_left.pop()
+    for ride in rides_left:
+        (a, b), (x, y), earliest_start, latest_finish = rides[ride]
+        to_ride_dist = abs(position[0]-a) + abs(position[1]-b)
+        ride_dist = abs(a-x) + abs(b-y)
+        possible = latest_finish < time + to_ride_dist + ride_dist
+        if possible:
+            rides_left.remove(ride)
+            return ride
     return False
 
 
