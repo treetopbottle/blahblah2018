@@ -18,7 +18,8 @@ def find_best_ride(rides, rides_left, position, time, bonus):
             wait_to_start = earliest_start-time
             wait_time = max(to_ride_dist, wait_to_start)
             if wait_to_start >= 0: # bonus!!
-                wait_time -= bonus
+                bonus = 1 + max(0.0001, float(bonus) / 11)
+                wait_time = float(wait_time) / bonus
             if wait_time < min_wait_time:
                 best_pos = (x, y)
                 best_time = ride_dist + max(earliest_start, time+to_ride_dist)
@@ -40,18 +41,22 @@ with open(sys.argv[1]) as in_file:
         rides.append(ride)
         rides_left.add(nr)
 
+    vehicle_positions_and_time = collections.defaultdict(list)
+    for i in range(nr_vehicles):
+        vehicle_positions_and_time[i] = [(0,0), 0]
+
     vehicle_rides = collections.defaultdict(list)
-    for veh_nr in range(nr_vehicles):
-        pos = (0,0)
-        time = 0
-        while True:
-            positions_for_vehicle = []
+    ride_found = True
+    while ride_found:
+        ride_found = False
+        for veh_nr in range(nr_vehicles):
+            pos, time = vehicle_positions_and_time[veh_nr]
             best_ride_nr, new_pos, new_time = find_best_ride(rides, rides_left, pos, time, bonus)
             if best_ride_nr < 0:
-                break
+                continue
+            ride_found = True
             vehicle_rides[veh_nr].append(best_ride_nr)
-            pos = new_pos
-            time = new_time
+            vehicle_positions_and_time[veh_nr] = [new_pos, new_time]
 
     for i in range(nr_vehicles):
         v_r = vehicle_rides[i]
