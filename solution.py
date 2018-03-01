@@ -12,8 +12,10 @@ def find_best_ride(rides, rides_left, position, time):
         possible = latest_finish > time + to_ride_dist + ride_dist
         if possible:
             rides_left.remove(ride)
-            return ride
-    return False
+            new_pos = (x, y)
+            new_time = ride_dist + max(earliest_start, time+to_ride_dist)
+            return ride, new_pos, new_time
+    return -1, (0,0), 0
 
 
 with open(sys.argv[1]) as in_file:
@@ -27,25 +29,20 @@ with open(sys.argv[1]) as in_file:
         rides.append(ride)
         rides_left.add(nr)
 
-    vehicle_position_times = []
-    for i in range(nr_vehicles):
-        vehicle_position_times.append([(0,0), 0])
-
     vehicle_rides = collections.defaultdict(list)
-    ride_found = True
-    while len(rides_left) > 0 and ride_found:
-        ride_found = False
-        for vehicle_number in range(nr_vehicles):
-            pos, time = vehicle_position_times[vehicle_number]
-            best_ride = find_best_ride(rides, rides_left, pos, time)
-            if best_ride:
-                # TODO update vehicle ride and position
-                vehicle_rides[vehicle_number].append(best_ride)
-                ride_found = True
+    for veh_nr in range(nr_vehicles):
+        pos = (0,0)
+        time = 0
+        while True:
+            positions_for_vehicle = []
+            best_ride_nr, new_pos, new_time = find_best_ride(rides, rides_left, pos, time)
+            if best_ride_nr < 0:
+                break
+            vehicle_rides[veh_nr].append(best_ride_nr)
+            pos = new_pos
+            time = new_time
 
     for i in range(nr_vehicles):
         v_r = vehicle_rides[i]
-        if v_r == []:
-            print("0")
         print(len(v_r), ' '.join([str(i) for i in v_r]))
 
