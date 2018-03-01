@@ -18,7 +18,8 @@ def find_best_ride(rides, rides_left, position, time, bonus):
             wait_to_start = earliest_start-time
             wait_time = max(to_ride_dist, wait_to_start)
             if wait_to_start >= 0: # bonus!!
-                wait_time -= bonus
+                bonus = 1 + max(0.001, float(bonus) / 15)
+                wait_time = float(wait_time) / bonus
             if wait_time < min_wait_time:
                 best_pos = (x, y)
                 best_time = ride_dist + max(earliest_start, time+to_ride_dist)
